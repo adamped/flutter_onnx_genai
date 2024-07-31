@@ -25,3 +25,10 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+*.g.dart
+*.log
+
+.vscode/
+
+assets/*
