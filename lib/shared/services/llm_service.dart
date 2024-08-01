@@ -8,7 +8,6 @@ class LLMService {
   final Model model;
   final Tokenizer tokenizer;
   final TokenizerStream tokenizerStream;
-
   LLMService(this.model, this.tokenizer, this.tokenizerStream);
 
   String inference(String text) {

@@ -2,6 +2,8 @@
 
 Example chat app using a local instance of the onnxruntime for local inferencing.
 
+![Flutter chat app screenshot](chat_app_screenshot.png)
+
 ## Supported Architectures
 
 |Linux|Windows|Android|iOS|Web|
