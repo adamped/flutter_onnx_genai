@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_onnx_genai/features/chat/data/message_list_provider.dart';
 import 'package:flutter_onnx_genai/features/chat/domain/message.dart';
@@ -5,14 +7,37 @@ import 'package:flutter_onnx_genai/features/chat/ui/message_bubble.dart';
 import 'package:flutter_onnx_genai/shared/services/llm_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final messageCountProvider =
+    StateNotifierProvider<MessageCountNotifier, int>((ref) {
+  return MessageCountNotifier();
+});
+
+class MessageCountNotifier extends StateNotifier<int> {
+  MessageCountNotifier() : super(0);
+
+  int getNextId() {
+    state++;
+    return state;
+  }
+}
+
 Future<void> inference(WidgetRef ref, String message) async {
+  ref.watch(messageListProvider.notifier).addMessage(Message(
+      isMe: true,
+      text: message,
+      timestamp: DateTime.now(),
+      messageId: ref.watch(messageCountProvider.notifier).getNextId()));
+
   var response = ref.watch(llmServiceProvider).value!.inference(message);
 
-  ref.watch(messageListProvider.notifier).addMessage(
-      Message(isMe: true, text: message, timestamp: DateTime.now()));
+  var id = ref.watch(messageCountProvider.notifier).getNextId();
 
-  ref.watch(messageListProvider.notifier).addMessage(
-      Message(isMe: false, text: response, timestamp: DateTime.now()));
+  await for (var char in response) {
+    if (char == endOfText) {
+      continue;
+    }
+    ref.watch(messageListProvider.notifier).streamMessage(id, char);
+  }
 }
 
 final isProcessingProvider =

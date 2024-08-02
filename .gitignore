@@ -30,5 +30,5 @@ doc/api/
 *.log
 
 .vscode/
-
-assets/*
+linux/flutter/
+assets/phi-3-mini/

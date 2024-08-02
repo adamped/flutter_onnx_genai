@@ -12,4 +12,23 @@ class MessageListNotifier extends StateNotifier<List<Message>> {
   void addMessage(Message message) {
     state = [...state, message];
   }
+
+  void streamMessage(int id, String word) {
+    if (!state.any((element) => element.messageId == id)) {
+      addMessage(Message(
+          isMe: false, messageId: id, text: '', timestamp: DateTime.now()));
+    }
+
+    var message = state.firstWhere((element) => element.messageId == id);
+
+    var updatedMessage = Message(
+        text: message.text + word,
+        timestamp: message.timestamp,
+        isMe: message.isMe,
+        messageId: id);
+
+    state.removeWhere((element) => element.messageId == id);
+
+    addMessage(updatedMessage);
+  }
 }
